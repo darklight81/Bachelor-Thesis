@@ -33,3 +33,4 @@ def currentSongToString(current_song):
             current_song_url = current_song['item']['external_urls']['spotify']
 
     return current_song_str, current_song_url
+

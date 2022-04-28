@@ -1,3 +1,4 @@
+from django.db.models.functions import Now
 from requests import Request
 from rest_framework.parsers import JSONParser
 
@@ -12,10 +13,10 @@ from bachelorthesis_v2.settings import SOCIAL_AUTH_SPOTIFY_KEY, SOCIAL_AUTH_SPOT
 from rest_framework import status
 import spotipy
 
-from .serializers import UserSerializer
+from .serializers import UserSerializer, LikeSerializer
 from .utils import *
 
-
+'''
 class AuthURL(APIView):
     def get(self, request):
         url = Request('GET', 'https://accounts.spotify.com/authorize', params={
@@ -26,6 +27,7 @@ class AuthURL(APIView):
         }).prepare().url
 
         return Response({'url': url}, status=status.HTTP_200_OK)
+'''
 
 
 class UserView(APIView):
@@ -33,6 +35,7 @@ class UserView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
+        # Update current song
         serializer = UserSerializer(request.user)
         content = {
             'user': serializer.data,
@@ -90,6 +93,7 @@ class CurrentSong(APIView):
         return Response(content)
 
 
+"""
 class UpdateCoords(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -102,9 +106,30 @@ class UpdateCoords(APIView):
         request.user.longitude = request.data["longitude"]
         request.user.save()
         return Response(status.HTTP_200_OK)
+"""
 
 
-class Logout(APIView):
+# Fetch default data about user from spotify
+class LoginView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        UserSocialAuth.objects.get_social_auth(uid=request.user, provider='spotify').refresh_token(load_strategy())
+        access_token = request.user.social_auth.get(provider='spotify').get_access_token(load_strategy())
+        sp = spotipy.Spotify(auth=access_token)
+        me = sp.me()
+        try:
+            request.user.profile_picture = me['images'][0]['url']
+        except IndexError:
+            request.user.profile_picture = ''
+        request.user.spotify_profile_url = me['external_urls']['spotify']
+        request.user.last_login = Now()
+        request.user.save()
+        return Response(sp.me(), status=status.HTTP_200_OK)
+
+
+class LogoutView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -114,21 +139,14 @@ class Logout(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class AfterLogin(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-
-class LikeSong(APIView):
+class LikeView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        likes = Like.objects.filter(given_to=request.user.id)
-        content = {
-            'likes': likes
-        }
-        return Response(content, status=status.HTTP_200_OK)
+        likes = Like.objects.filter(given_to=request.user)
+        serializer = LikeSerializer(likes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         try:
