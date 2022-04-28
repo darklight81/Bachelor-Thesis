@@ -1,6 +1,8 @@
 from django.db.models.functions import Now
+from requests import Request
 from rest_framework.parsers import JSONParser
 
+from bachelorthesis_v2.settings import SOCIAL_AUTH_SPOTIFY_SCOPE, SOCIAL_AUTH_SPOTIFY_KEY
 from .models import User, Like
 from social_django.models import UserSocialAuth
 from social_django.utils import load_strategy
@@ -163,7 +165,7 @@ class UpdateCoords(APIView):
         return Response(status.HTTP_200_OK)
 """
 
-'''
+
 class AuthURL(APIView):
     def get(self, request):
         url = Request('GET', 'https://accounts.spotify.com/authorize', params={
@@ -174,4 +176,3 @@ class AuthURL(APIView):
         }).prepare().url
 
         return Response({'url': url}, status=status.HTTP_200_OK)
-'''
