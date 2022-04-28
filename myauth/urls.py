@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import UserView, DashboardUsersView, CurrentSong, LogoutView, LikeView, LoginView
+from .views import UserView, DashboardUsersView, LogoutView, LikeView, LoginView
 app_name = 'myauth'
 urlpatterns = [
     path('login/', include('rest_social_auth.urls_token')),
