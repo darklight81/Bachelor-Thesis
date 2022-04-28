@@ -11,5 +11,5 @@ urlpatterns = [
     path('users/', DashboardUsersView.as_view(), name='users'),
     # path('current-song/', CurrentSong.as_view(), name='current_song'),
     # path('update-coords/', UpdateCoords.as_view(), name='update'),
-    path('like/', LikeView.as_view(), name='like'),
+    path('likes/', LikeView.as_view(), name='like'),
 ]

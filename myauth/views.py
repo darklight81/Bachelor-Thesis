@@ -84,7 +84,8 @@ class LoginView(APIView):
 
         request.user.last_login = Now()
         request.user.save()
-        return Response(sp.me(), status=status.HTTP_200_OK)
+        serializer = UserSerializer(    request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 # Deletes auth token after Logout
