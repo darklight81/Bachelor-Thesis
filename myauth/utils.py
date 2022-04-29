@@ -14,6 +14,7 @@ def closestUsers(user, users):
             x['distance'] = haversine(user_location, (x['latitude'], x['longitude']))
             queryset.append(x)
     srt = sorted(queryset, key=lambda i: i['distance'])
+    srt.pop(0)
     return srt
 
 

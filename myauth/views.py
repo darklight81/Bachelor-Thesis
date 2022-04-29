@@ -62,7 +62,7 @@ class DashboardUsersView(APIView):
         content = {
             'users': filtered_users
         }
-        return Response(content)
+        return Response(content, status=status.HTTP_200_OK)
 
 
 # Fetch default data about user from spotify after logging in
@@ -84,7 +84,7 @@ class LoginView(APIView):
 
         request.user.last_login = Now()
         request.user.save()
-        serializer = UserSerializer(    request.user)
+        serializer = UserSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -122,6 +122,19 @@ class LikeView(APIView):
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         serializer = LikeSerializer(like)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def delete(self, request):
+        try:
+            given_by = User.objects.filter(id=request.data['given_by']).first()
+            given_to = User.objects.filter(id=request.data['given_to']).first()
+            like = Like.objects.filter(given_by=given_by,
+                                       given_to=given_to,
+                                       song_name=request.data['song_name'],
+                                       song_url=request.data['song_url']).first()
+            like.delete()
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_200_OK)
 
 
 '''
