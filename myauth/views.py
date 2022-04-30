@@ -1,4 +1,5 @@
 from django.db.models.functions import Now
+from django.http import Http404
 from requests import Request
 from rest_framework.parsers import JSONParser
 
@@ -17,31 +18,49 @@ from .serializers import UserSerializer, LikeSerializer
 from .utils import *
 
 
-class UserView(APIView):
+class UserDetailView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, format=None):
+    def get_object(self, pk):
+        try:
+            return User.objects.get(id=pk)
+        except User.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
         # Update current song
-        UserSocialAuth.objects.get_social_auth(uid=request.user, provider='spotify').refresh_token(load_strategy())
-        access_token = request.user.social_auth.get(provider='spotify').get_access_token(load_strategy())
+        user = self.get_object(pk)
+        UserSocialAuth.objects.get_social_auth(uid=user, provider='spotify').refresh_token(load_strategy())
+        access_token = user.social_auth.get(provider='spotify').get_access_token(load_strategy())
 
         current_song = spotipy.Spotify(auth=access_token).currently_playing()
-
         current_song_deserialized = currentSongToString(current_song)
-        request.user.current_song_name = current_song_deserialized[0]
-        request.user.current_song_url = current_song_deserialized[1]
-        request.user.save()
+        user.current_song_name = current_song_deserialized[0]
+        user.current_song_url = current_song_deserialized[1]
+        user.save()
 
-        serializer = UserSerializer(request.user)
-        content = {
-            'user': serializer.data,
-            'token': str(request.auth),  # None
-        }
+        serializer = UserSerializer(user)
+
+        if request.user.id is user.id:
+            content = {
+                'user': serializer.data,
+                'token': str(request.auth),  # None
+            }
+        else:
+            content = {
+                'user': serializer.data,
+            }
         return Response(content, status=status.HTTP_200_OK)
 
-    def put(self, request):
+    def put(self, request, pk, format=None):
+        user = self.get_object(pk)
+        if user.id is not request.user.id:
+            return Response({"detail": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
+
         data = JSONParser().parse(request)
+
+        data['username'] = request.user.username
         serializer = UserSerializer(request.user, data=data)
         if serializer.is_valid():
             serializer.save()
@@ -49,15 +68,16 @@ class UserView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class DashboardUsersView(APIView):
+class UsersView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         # Todo: use User.object.all() instead of .values()
         # Get all users
-        users = User.objects.values()
-        filtered_users = closestUsers(request.user, users)
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        filtered_users = closestUsers(request.user, serializer.data)
         # Get closest users
         content = {
             'users': filtered_users
