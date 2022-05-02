@@ -4,7 +4,7 @@ from requests import Request
 from rest_framework.parsers import JSONParser
 
 from bachelorthesis_v2.settings import SOCIAL_AUTH_SPOTIFY_SCOPE, SOCIAL_AUTH_SPOTIFY_KEY
-from .models import User, Like
+from .models import User, Like, Friendship
 from social_django.models import UserSocialAuth
 from social_django.utils import load_strategy
 from rest_framework.authentication import TokenAuthentication
@@ -14,7 +14,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 import spotipy
 
-from .serializers import UserSerializer, LikeSerializer
+from .serializers import UserSerializer, LikeSerializer, FriendshipSerializer
 from .utils import *
 
 
@@ -83,6 +83,48 @@ class UsersView(APIView):
             'users': filtered_users
         }
         return Response(content, status=status.HTTP_200_OK)
+
+
+class UserFriendsView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, pk):
+        try:
+            return User.objects.get(id=pk)
+        except User.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        user = self.get_object(pk)
+
+        serializer = FriendshipSerializer(user.friends, many=True)
+        content = {
+            'friends': serializer.data
+        }
+        return Response(content, status=status.HTTP_200_OK)
+
+    def post(self, request, pk, format=None):
+        user = self.get_object(pk)
+
+        if user.id is not request.user.id:
+            return Response({"detail": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
+
+        data = JSONParser().parse(request)
+        try:
+            friend = self.get_object(data['friend_id'])
+        except KeyError:
+            return Response({'error': 'Missing parameter friend_id in body.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if Friendship.objects.filter(friend_id=data['friend_id'], creator_id=pk).exists():
+            return Response({'error': 'Friendship already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        friendship = Friendship.objects.create(creator=user, friend=friend)
+        creator = User.objects.get(id=request.user.id)
+        creator.friends.add(friendship)
+
+        serializer = FriendshipSerializer(friendship)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 # Fetch default data about user from spotify after logging in

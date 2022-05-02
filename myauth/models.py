@@ -10,6 +10,7 @@ class User(AbstractUser):
     current_song_name = models.CharField(max_length=255, null=True)
     current_song_url = models.URLField(max_length=255, null=True)
     spotify_profile_url = models.URLField(max_length=255, null=True)
+    friends = models.ManyToManyField('Friendship')
 
 
 class Like(models.Model):
@@ -18,3 +19,9 @@ class Like(models.Model):
     song_url = models.URLField(max_length=255)
     given_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='given_by', unique=False)
     given_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='given_to', unique=False)
+
+
+class Friendship(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    creator = models.ForeignKey(User, related_name="friendship_creator_set", on_delete=models.CASCADE)
+    friend = models.ForeignKey(User, related_name="friend_set", on_delete=models.CASCADE)

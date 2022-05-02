@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import UserDetailView, UsersView, LogoutView, LikeView, LoginView, AuthURL
+from .views import UserDetailView, UsersView, LogoutView, LikeView, LoginView, AuthURL, UserFriendsView
 app_name = 'myauth'
 urlpatterns = [
     path('login/', include('rest_social_auth.urls_token')),
@@ -12,4 +12,5 @@ urlpatterns = [
     # path('current-song/', CurrentSong.as_view(), name='current_song'),
     # path('update-coords/', UpdateCoords.as_view(), name='update'),
     path('likes/', LikeView.as_view(), name='like'),
+    path('users/<int:pk>/friends/', UserFriendsView.as_view(), name='friends')
 ]
