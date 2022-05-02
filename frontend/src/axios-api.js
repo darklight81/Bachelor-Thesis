@@ -28,18 +28,19 @@ export async function fetchUsers(token){
     return users
 }
 
-export async function editUser(token, config){
+export async function editUser(id, token, config){
     let user
-    await axios.put('api/user/', config, {
+
+    await axios.put(`api/users/${id}/`, config, {
         headers: {
             'Authorization': `Token ${token}`
         }}).then(res => user = res.data)
     return user
 }
 
-export async function getUser(token){
+export async function getUser(id, token){
     let user
-    await axios.get('api/user/',{
+    await axios.get(`api/users/${id}/`,{
         headers: {
             'Authorization': `Token ${token}`
         }}).then(res => user = res.data)
@@ -66,9 +67,18 @@ export async function getLikes(token){
 
 export async function postLike(token, config){
     let ret
-    await axios.post('api/likes', config, {
+    await axios.post('api/likes/', config, {
         headers: {
             'Authorization': `Token ${token}`
         }}).then( res => ret = res.data)
+    return ret
+}
+export async function deleteLike(token, config){
+    let ret
+    await axios.delete('api/likes/', {
+        headers: {
+            'Authorization': `Token ${token}`
+        },
+        data: config}).then( res => ret = res.data)
     return ret
 }

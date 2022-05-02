@@ -1,16 +1,17 @@
 <template>
   <div class="dashboard" style="background: darkcyan">
     <h1>Dashboard</h1>
-    <div class="container">
+    <div v-if="!isLoading" class="container">
       <div class="row justify-content-center">
-        <UserCard class="col-4" v-for="user in users" :key="user.id" :user="user"/>
+        <UserCard class="col-4" v-for="x in users" :key="x.id" :user="x" :token="token" :logged-user="user"/>
       </div>
     </div>
+    <h2 v-else>Loading</h2>
   </div>
 </template>
 
 <script>
-import {fetchUsers, editUser, getUser} from "../axios-api";
+import {fetchUsers, editUser} from "../axios-api";
 import UserCard from "../components/UserCard";
 
 export default {
@@ -22,21 +23,21 @@ export default {
   },
   data(){
     return{
-      users: ''
+      users: '',
+      isLoading: true
     }
   },
-  async mounted() {
-    let self = this
-    navigator.geolocation.getCurrentPosition( function (res){
+  mounted() {
+    navigator.geolocation.getCurrentPosition(async res => {
       const config = {
-        "username": self.user.username,
+        "username": this.user.username,
         "latitude": res.coords.latitude,
         "longitude": res.coords.longitude
       }
-      editUser(self.token, config)
+      console.log("test")
+      ;[, this.users] = await Promise.all([editUser(this.user.id, this.token, config), fetchUsers(this.token)])
+      this.isLoading = false
     })
-    self.users = await fetchUsers(this.token)
-    await getUser(this.token)
   }
 }
 </script>

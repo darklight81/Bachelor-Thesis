@@ -21,6 +21,10 @@ const routes = [
     path: '/notifications',
     name: 'Notifications',
     component: Notifications
+  },
+  {
+    path :'*',
+    redirect: '/',
   }
 ]
 

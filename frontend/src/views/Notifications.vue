@@ -1,5 +1,5 @@
 <template>
-  <h1> Notifications </h1>
+  <h1 id="asfd"> Notifications </h1>
 </template>
 
 <script>
@@ -9,7 +9,13 @@ export default {
     user: Object,
     token: String
   },
+  data(){
+    return {
+    }
+  },
   mounted() {
+  },
+  methods: {
 
   }
 }
