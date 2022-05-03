@@ -3,10 +3,10 @@
     <div id="nav"  v-if="user">
         <b-navbar variant="dark">
         <b-navbar-nav class="mx-auto">
-        <b-nav-item> <router-link to="/" ><b-icon icon="house-door-fill"></b-icon></router-link></b-nav-item>
-        <b-nav-item> <router-link to="/profile"><b-icon-person-fill/> </router-link></b-nav-item>
-        <b-nav-item> <router-link to="/notifications"><b-icon-bell-fill/> </router-link></b-nav-item>
-        <b-nav-item> <a href="" v-on:click="logout"> <b-icon-power/></a> </b-nav-item>
+        <b-nav-item> <router-link to="/" ><b-icon class="nav-icon" icon="house-door-fill"></b-icon></router-link></b-nav-item>
+        <b-nav-item> <router-link to="/profile"><b-icon-person-fill class="nav-icon"/> </router-link></b-nav-item>
+        <b-nav-item> <router-link to="/notifications"><b-icon-bell-fill class="nav-icon"/> </router-link></b-nav-item>
+        <b-nav-item> <a href="" v-on:click="logout"> <b-icon-power class="nav-icon"/></a> </b-nav-item>
       </b-navbar-nav>
     </b-navbar>
       <router-view :token="token" :user="user"/>
@@ -22,6 +22,13 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+.nav-icon{
+  transition: 0.2s;
+  color: darkolivegreen;
+}
+.nav-icon:hover{
+  color: darkgreen;
 }
 </style>
 <script>
@@ -39,7 +46,9 @@ export default {
     this.user = JSON.parse(localStorage.getItem('user'))
     this.token = localStorage.getItem('token')
     const urlParams = new URLSearchParams(window.location.search)
-
+    if (!this.user){
+      await this.$router.push('/')
+    }
     //Means this is redirect from spotify
     if (urlParams.get('code') && !this.user){
       let config = {

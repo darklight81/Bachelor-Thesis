@@ -1,6 +1,5 @@
 <template>
-  <div class="dashboard" style="background: darkcyan">
-    <h1>Dashboard</h1>
+  <div class="dashboard" style="background: darkslategray">
     <div v-if="!isLoading" class="container">
       <div class="row justify-content-center">
         <UserCard class="col-4" v-for="x in users" :key="x.id" :user="x" :token="token" :logged-user="user"/>
