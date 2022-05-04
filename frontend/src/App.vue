@@ -3,10 +3,11 @@
     <div id="nav"  v-if="user">
         <b-navbar variant="dark">
         <b-navbar-nav class="mx-auto">
-        <b-nav-item> <router-link to="/" ><b-icon class="nav-icon" icon="house-door-fill"></b-icon></router-link></b-nav-item>
-        <b-nav-item> <router-link to="/profile"><b-icon-person-fill class="nav-icon"/> </router-link></b-nav-item>
-        <b-nav-item> <router-link to="/notifications"><b-icon-bell-fill class="nav-icon"/> </router-link></b-nav-item>
-        <b-nav-item> <a href="" v-on:click="logout"> <b-icon-power class="nav-icon"/></a> </b-nav-item>
+        <b-nav-item>  <router-link to="/" >             <font-awesome-icon class="nav-icon" icon="fa-solid fa-house" size="xl" />  </router-link></b-nav-item>
+        <b-nav-item>  <router-link to="/friends">       <font-awesome-icon class="nav-icon" icon="fa-solid fa-users" size="xl"/>  </router-link></b-nav-item>
+        <b-nav-item>  <router-link to="/profile">       <font-awesome-icon class="nav-icon" icon="fa-solid fa-user" size="xl"/>   </router-link></b-nav-item>
+        <b-nav-item>  <router-link to="/notifications"> <font-awesome-icon class="nav-icon" icon="fa-solid fa-bell" size="xl"/>   </router-link></b-nav-item>
+        <b-nav-item>  <a href="" v-on:click="logout">   <font-awesome-icon class="nav-icon" icon="fa-solid fa-power-off" size="xl" /> </a> </b-nav-item>
       </b-navbar-nav>
     </b-navbar>
       <router-view :token="token" :user="user"/>
@@ -17,11 +18,12 @@
 
 <style>
 #app {
+  height: 100vh;
+  background: darkslategray;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
 }
 .nav-icon{
   transition: 0.2s;

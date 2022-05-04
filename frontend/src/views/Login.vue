@@ -3,11 +3,11 @@
   <main>
     <div class="frame">
       <div class="frame__title-wrap">
-        <h1 class="frame__title">Ambient Canvas Backgrounds</h1>
+        <h1 class="frame__title"></h1>
       </div>
       <div class="frame__demos">
         <a href="#" class="frame__demo">About us</a>
-        <a href="#" class="frame__demo">Contact</a>
+        <a href="https://github.com/crnacura/AmbientCanvasBackgrounds" class="frame__demo">Background credit</a>
       </div>
     </div>
     <div class="content content--canvas">

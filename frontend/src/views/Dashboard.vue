@@ -1,11 +1,21 @@
 <template>
   <div class="dashboard" style="background: darkslategray">
+
     <div v-if="!isLoading" class="container">
-      <div class="row justify-content-center">
-        <UserCard class="col-4" v-for="x in users" :key="x.id" :user="x" :token="token" :logged-user="user"/>
-      </div>
+        <div class="row">
+          <UserCard v-for="x in users" :key="x.id" :user="x" :token="token" :logged-user="user"/>
+        </div>
     </div>
-    <h2 v-else>Loading</h2>
+
+    <div v-else-if="isLoading && !declinedLocation" class="loading">
+      <half-circle-spinner class="spinner"
+                           :animation-duration="1000"
+                           :size="100"
+                           color="green"
+      />
+    </div>
+
+    <div v-else class="loading"> <h2 class="spinner" style="color: darkolivegreen"> To see your homepage, you need to enable location services.</h2></div>
   </div>
 </template>
 
@@ -23,7 +33,8 @@ export default {
   data(){
     return{
       users: '',
-      isLoading: true
+      isLoading: true,
+      declinedLocation: false
     }
   },
   mounted() {
@@ -33,14 +44,25 @@ export default {
         "latitude": res.coords.latitude,
         "longitude": res.coords.longitude
       }
-      console.log("test")
       ;[, this.users] = await Promise.all([editUser(this.user.id, this.token, config), fetchUsers(this.token)])
       this.isLoading = false
+    }, () => {
+      this.declinedLocation = true
     })
   }
 }
 </script>
 
 <style scoped>
-
+.loading{
+  height: 94.3vh;
+  width: 100vw;
+}
+.spinner{
+  position: absolute;
+  justify-content: center;
+  top:  50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
 </style>

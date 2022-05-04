@@ -56,26 +56,58 @@ export async function logout(token){
     return ret
 }
 
-export async function getLikes(token){
+export async function getLikes(token, user_id){
     let likes
-    await axios.get('api/likes/',{
+    await axios.get(`api/users/${user_id}/likes`,{
         headers: {
             'Authorization': `Token ${token}`
         }}).then( res => likes = res.data)
-    return likes
+    return likes.likes
 }
 
-export async function postLike(token, config){
+export async function postLike(token, given_to, config){
     let ret
-    await axios.post('api/likes/', config, {
+    await axios.post(`api/users/${given_to}/likes/`, config, {
         headers: {
             'Authorization': `Token ${token}`
         }}).then( res => ret = res.data)
+    console.log(ret)
     return ret
 }
-export async function deleteLike(token, config){
+export async function deleteLike(token, given_to, config){
     let ret
-    await axios.delete('api/likes/', {
+    await axios.delete(`api/users/${given_to}/likes/`, {
+        headers: {
+            'Authorization': `Token ${token}`
+        },
+        data: config}).then( res => ret = res.data)
+    return ret
+}
+
+export async function addFriend(token, config, user_id){
+    let ret
+    await axios.post(`/api/users/${user_id}/friends/`, config, {
+        headers: {
+            'Authorization': `Token ${token}`
+        }}).then( res => ret = res.data, () => ret = false)
+    return ret
+}
+
+export async function fetchFriends(token, user_id){
+    let users
+    await axios.get(`api/users/${user_id}/friends/`, {
+        headers: {
+            'Authorization': `Token ${token}`
+        }
+    }).then(res => {
+        users = res.data.friends
+    },  )
+    return users
+}
+
+export async function removeFriend(token, user_id, config){
+    let ret
+    await axios.delete(`api/users/${user_id}/friends/`, {
         headers: {
             'Authorization': `Token ${token}`
         },

@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Dashboard from "../views/Dashboard";
-import Profile from "../views/Profile";
+import ProfileEdit from "../views/ProfileEdit";
 import Notifications from "../views/Notifications";
+import Friendlist from "../views/Friendlist";
+import Profile from "../views/Profile";
 
 Vue.use(VueRouter)
 
@@ -15,13 +17,24 @@ const routes = [
   },
   {
     path: '/profile',
-    name: 'Profile',
-    component: Profile
+    name: 'ProfileEdit',
+    component: ProfileEdit
   },
   {
     path: '/notifications',
     name: 'Notifications',
     component: Notifications
+  },
+  {
+    path: '/friends',
+    name: 'Friends',
+    component: Friendlist
+  },
+  {
+    path: '/profile/:id',
+    name: 'Profile',
+    component: Profile,
+    props: true
   },
   {
     path :'*',

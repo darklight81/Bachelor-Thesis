@@ -1,24 +1,32 @@
 <template>
-      <div>
+      <div class="col-md-4">
         <div class="contact-box center-version">
-          <a :href="user.spotify_profile_url">
+          <router-link :to="{ name: 'Profile', params: { id: this.user.id }}">
             <img alt="image" class="rounded-circle" v-if="!this.user.profile_picture" src="https://bootdey.com/img/Content/avatar/avatar1.png">
             <img alt="image" class="rounded-circle" v-else :src="this.user.profile_picture">
-          </a>
+          </router-link>
             <h3 class="m-b-xs"><strong>{{ this.user.username }}</strong>
-              <a v-if="this.user.spotify" :href="this.user.spotify_profile_url">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-spotify" viewBox="0 0 16 16">
-              <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.669 11.538a.498.498 0 0 1-.686.165c-1.879-1.147-4.243-1.407-7.028-.77a.499.499 0 0 1-.222-.973c3.048-.696 5.662-.397 7.77.892a.5.5 0 0 1 .166.686zm.979-2.178a.624.624 0 0 1-.858.205c-2.15-1.321-5.428-1.704-7.972-.932a.625.625 0 0 1-.362-1.194c2.905-.881 6.517-.454 8.986 1.063a.624.624 0 0 1 .206.858zm.084-2.268C10.154 5.56 5.9 5.419 3.438 6.166a.748.748 0 1 1-.434-1.432c2.825-.857 7.523-.692 10.492 1.07a.747.747 0 1 1-.764 1.288z"/>
-            </svg> </a> </h3>
-            <h3>{{ this.user.distance }} km away</h3>
-            <div class="font-weight-bold" v-if="this.user.current_song_name"> <a :href="this.user.current_song_url"> {{this.user.current_song_name}} </a>  <b-icon-heart/>  </div>
-            <div class="font-weight-bold" v-else> Currently not listening  </div>
+              <a v-if="this.user.spotify_profile_url" :href="this.user.spotify_profile_url"><font-awesome-icon icon="fa-brands fa-spotify" style="color: darkolivegreen"/></a>
+            </h3>
 
+
+            <div class="font-weight-bold" v-if="this.user.current_song_name"> <a :href="this.user.current_song_url"> {{this.user.current_song_name}} </a>  </div>
+            <div class="font-weight-bold" v-else> Currently not listening  </div>
+            <div class="font-weight-normal" v-if="this.user.distance < 3">{{ this.distance }} m away </div>
+            <div class="font-weight-normal" v-else-if="this.user.distance < 300">{{ this.user.distance }} km away </div>
+            <div class="font-weight-normal" v-else>Very far away </div>
           <div class="contact-box-footer">
             <div class="m-t-xs btn-group">
-              <a class="btn btn-xs btn-white"><i class="fa fa-phone"></i> Call </a>
-              <a class="btn btn-xs btn-white"><i class="fa fa-envelope"></i> Email</a>
-              <a class="btn btn-xs btn-white"><i class="fa fa-user-plus"></i> Follow</a>
+              <div class="likeSongButton" v-if="this.user.current_song_name">
+                <a v-if="!this.songLiked"
+                   v-on:click="likeSong(user.id, user.current_song_name, user.current_song_url, $event)"
+                   class="btn btn-xs btn-white"><font-awesome-icon icon="fa-regular fa-heart" /> Like Song</a>
+                <a v-else class="btn btn-xs btn-white"
+                   v-on:click="unlikeSong(user.id, user.current_song_name, user.current_song_url, $event)">
+                  <font-awesome-icon icon="fa-solid fa-heart" /> Liked</a>
+              </div>
+              <a v-if="!this.userFollowed" class="btn btn-xs btn-white" v-on:click="followPerson(user.id, $event)"><font-awesome-icon icon="fa-solid fa-user-plus" /> Follow</a>
+              <a v-else class="btn btn-xs btn-white" v-on:click="unfollowPerson(user.id, $event)"><font-awesome-icon icon="fa-solid fa-user-minus" /> Unfollow</a>
             </div>
           </div>
         </div>
@@ -26,7 +34,7 @@
 </template>
 
 <script>
-import {deleteLike, postLike} from "../axios-api";
+import {addFriend, deleteLike, postLike, removeFriend} from "../axios-api";
 
 export default {
   name: "UserCard",
@@ -37,35 +45,55 @@ export default {
   },
   data(){
     return{
+      userFollowed: false,
       songLiked: false,
-      avatar: require('@/assets/avatar.png')
+      avatar: require('@/assets/avatar.png'),
+      distance: 0
     }
   },
   mounted() {
     this.user.distance = Math.round(this.user.distance * 100) / 100
+    if (this.user.distance < 3)
+      this.distance = this.user.distance * 1000 // into meters
   },
   methods: {
     likeSong: function (given_to, song_name, song_url, event){
       event.preventDefault()
       this.songLiked = true
       let config = {
-        'given_to': given_to,
         'given_by': this.loggedUser.id,
         'song_name': song_name,
         'song_url': song_url
       }
-      postLike(this.token, config)
+      console.log('liked')
+      postLike(this.token, given_to, config)
     },
     unlikeSong: function (given_to, song_name, song_url, event){
       event.preventDefault()
       this.songLiked = false
       let config = {
-        'given_to': given_to,
         'given_by': this.loggedUser.id,
         'song_name': song_name,
         'song_url': song_url
       }
-      deleteLike(this.token, config)
+      deleteLike(this.token, given_to, config)
+    },
+    followPerson: function (friend_id, event){
+      event.preventDefault()
+      this.userFollowed = true
+      let config = {
+        'friend_id': friend_id
+      }
+      addFriend(this.token, config, this.loggedUser.id)
+    },
+    unfollowPerson: function (friend_id, event){
+      event.preventDefault()
+      this.userFollowed = false
+      let config = {
+        'user_id': this.loggedUser.id,
+        'friend_id': friend_id
+      }
+      removeFriend(this.token, this.loggedUser.id, config)
     }
   }
 }
