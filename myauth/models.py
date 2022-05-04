@@ -10,7 +10,16 @@ class User(AbstractUser):
     current_song_name = models.CharField(max_length=255, null=True)
     current_song_url = models.URLField(max_length=255, null=True)
     spotify_profile_url = models.URLField(max_length=255, null=True)
+    favorite_artist = models.CharField(max_length=20, null=True)
+    favorite_song = models.CharField(max_length=20, null=True)
+    favorite_podcast = models.CharField(max_length=20, null=True)
+    favorite_genre = models.CharField(max_length=20, null=True)
+    instagram_url = models.URLField(max_length=255, null=True)
+    facebook_url = models.URLField(max_length=255, null=True)
+    twitter_url = models.URLField(max_length=255, null=True)
+    city = models.CharField(max_length=20, null=True)
     friends = models.ManyToManyField('Friendship')
+    likes = models.ManyToManyField('Like')
 
 
 class Like(models.Model):

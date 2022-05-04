@@ -7,14 +7,12 @@ def closestUsers(user, users):
     queryset = []
     user_location = (user.latitude, user.longitude)
     for x in users:
-        if x['latitude'] is None or x['longitude'] is None:
+        if x['latitude'] is None or x['longitude'] is None or x['id'] is user.id:
             pass
         else:
-            pass
             x['distance'] = haversine(user_location, (x['latitude'], x['longitude']))
             queryset.append(x)
     srt = sorted(queryset, key=lambda i: i['distance'])
-    srt.pop(0)
     return srt
 
 

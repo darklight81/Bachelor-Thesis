@@ -6,7 +6,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'current_song_name', 'current_song_url', 'profile_picture',
-                  'latitude', 'longitude', 'spotify_profile_url']
+                  'latitude', 'longitude', 'spotify_profile_url', 'favorite_artist', 'favorite_podcast', 'favorite_genre',
+                  'favorite_song', 'instagram_url', 'twitter_url', 'facebook_url', 'city', 'first_name', 'last_name']
 
 
 class LikeSerializer(serializers.ModelSerializer):
