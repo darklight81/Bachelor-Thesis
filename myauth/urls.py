@@ -12,5 +12,6 @@ urlpatterns = [
     # path('current-song/', CurrentSong.as_view(), name='current_song'),
     # path('update-coords/', UpdateCoords.as_view(), name='update'),
     path('users/<int:pk>/likes/', UserLikesView.as_view(), name='likes'),
-    path('users/<int:pk>/friends/', UserFriendsView.as_view(), name='friends')
+    path('users/<int:pk>/friends/', UserFriendsView.as_view(), name='friends'),
+    path('auth/', AuthURL.as_view())
 ]

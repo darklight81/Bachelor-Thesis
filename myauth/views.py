@@ -31,15 +31,6 @@ class UserDetailView(APIView):
     def get(self, request, pk, format=None):
         # Update current song
         user = self.get_object(pk)
-        UserSocialAuth.objects.get_social_auth(uid=user, provider='spotify').refresh_token(load_strategy())
-        access_token = user.social_auth.get(provider='spotify').get_access_token(load_strategy())
-
-        current_song = spotipy.Spotify(auth=access_token).currently_playing()
-        current_song_deserialized = currentSongToString(current_song)
-        user.current_song_name = current_song_deserialized[0]
-        user.current_song_url = current_song_deserialized[1]
-        user.save()
-
         serializer = UserSerializer(user)
 
         if request.user.id is user.id:
@@ -55,15 +46,25 @@ class UserDetailView(APIView):
 
     def put(self, request, pk, format=None):
         user = self.get_object(pk)
+
         if user.id is not request.user.id:
             return Response({"detail": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
 
+        UserSocialAuth.objects.get_social_auth(uid=user, provider='spotify').refresh_token(load_strategy())
+        access_token = user.social_auth.get(provider='spotify').get_access_token(load_strategy())
+
+        current_song = spotipy.Spotify(auth=access_token).currently_playing()
+        current_song_deserialized = currentSongToString(current_song)
         data = JSONParser().parse(request)
 
         data['username'] = request.user.username
+        if current_song is not None:
+            data['current_song_name'] = current_song_deserialized[0]
+            data['current_song_url'] = current_song_deserialized[1]
         serializer = UserSerializer(request.user, data=data)
         if serializer.is_valid():
             serializer.save()
+            print(serializer.data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -76,8 +77,8 @@ class UsersView(APIView):
         # Get all users
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
-        filtered_users = closestUsers(request.user, serializer.data)
         # Get closest users
+        filtered_users = closestUsers(request.user, serializer.data)
         content = {
             'users': filtered_users
         }
@@ -153,7 +154,6 @@ class LoginView(APIView):
 
         request.user.spotify_profile_url = me['external_urls']['spotify']
 
-        request.user.last_login = Now()
         request.user.save()
         serializer = UserSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -227,94 +227,12 @@ class UserLikesView(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-'''
-class LikeView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        likes = Like.objects.filter(given_to=request.user)
-        serializer = LikeSerializer(likes, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        try:
-            given_by = User.objects.filter(id=request.data['given_by']).first()
-            given_to = User.objects.filter(id=request.data['given_to']).first()
-            like = Like.objects.create(
-                given_to=given_to,
-                given_by=given_by,
-                song_name=request.data['song_name'],
-                song_url=request.data['song_url']
-            )
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        serializer = LikeSerializer(like)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def delete(self, request):
-        try:
-            given_by = User.objects.filter(id=request.data['given_by']).first()
-            given_to = User.objects.filter(id=request.data['given_to']).first()
-            like = Like.objects.filter(given_by=given_by,
-                                       given_to=given_to,
-                                       song_name=request.data['song_name'],
-                                       song_url=request.data['song_url']).first()
-            like.delete()
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(status=status.HTTP_200_OK)
-'''
-
-'''
-class CurrentSong(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        UserSocialAuth.objects.get_social_auth(uid=request.user, provider='spotify').refresh_token(load_strategy())
-        access_token = request.user.social_auth.get(provider='spotify').get_access_token(load_strategy())
-
-        sp = spotipy.Spotify(auth=access_token)
-        current_song = sp.currently_playing()
-        try:
-            request.user.profile_picture = sp.me()['images'][0]['url']
-        except IndexError:
-            request.user.profile_picture = ''
-
-        current_song_deserialized = currentSongToString(current_song)
-        request.user.current_song_name = current_song_deserialized[0]
-        request.user.current_song_url = current_song_deserialized[1]
-        request.user.save()
-
-        content = {
-            'currently_playing': current_song
-        }
-        return Response(content)
-'''
-
-"""
-class UpdateCoords(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        if not request.data["latitude"] or not request.data["longitude"]:
-            return Response(status.HTTP_400_BAD_REQUEST)
-
-        request.user.latitude = request.data["latitude"]
-        request.user.longitude = request.data["longitude"]
-        request.user.save()
-        return Response(status.HTTP_200_OK)
-"""
-
-
 class AuthURL(APIView):
     def get(self, request):
         url = Request('GET', 'https://accounts.spotify.com/authorize', params={
             'scope': SOCIAL_AUTH_SPOTIFY_SCOPE,
             'response_type': 'code',
-            'redirect_uri': 'http://localhost:8080/',
+            'redirect_uri': 'https://igor.uhlik.ml/',
             'client_id': SOCIAL_AUTH_SPOTIFY_KEY,
         }).prepare().url
 

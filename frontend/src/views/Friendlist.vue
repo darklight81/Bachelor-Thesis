@@ -34,7 +34,6 @@ export default {
   },
   async mounted() {
     this.friends = await fetchFriends(this.token, this.user.id)
-    console.log(this.friends)
   },
   methods: {
     itemCountInRow:function(index){

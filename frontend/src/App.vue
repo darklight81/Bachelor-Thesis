@@ -1,15 +1,15 @@
 <template>
   <div id="app">
     <div id="nav"  v-if="user">
-        <b-navbar variant="dark">
+      <b-navbar variant="dark">
         <b-navbar-nav class="mx-auto">
-        <b-nav-item>  <router-link to="/" >             <font-awesome-icon class="nav-icon" icon="fa-solid fa-house" size="xl" />  </router-link></b-nav-item>
-        <b-nav-item>  <router-link to="/friends">       <font-awesome-icon class="nav-icon" icon="fa-solid fa-users" size="xl"/>  </router-link></b-nav-item>
-        <b-nav-item>  <router-link to="/profile/">       <font-awesome-icon class="nav-icon" icon="fa-solid fa-user" size="xl"/>   </router-link></b-nav-item>
-        <b-nav-item>  <router-link to="/notifications"> <font-awesome-icon class="nav-icon" icon="fa-solid fa-bell" size="xl"/>   </router-link></b-nav-item>
-        <b-nav-item>  <a href="" v-on:click="logout">   <font-awesome-icon class="nav-icon" icon="fa-solid fa-power-off" size="xl" /> </a> </b-nav-item>
-      </b-navbar-nav>
-    </b-navbar>
+          <b-nav-item>  <router-link to="/" >             <font-awesome-icon class="nav-icon" icon="fa-solid fa-house" size="xl" />  </router-link></b-nav-item>
+          <b-nav-item>  <router-link to="/friends">       <font-awesome-icon class="nav-icon" icon="fa-solid fa-users" size="xl"/>  </router-link></b-nav-item>
+          <b-nav-item>  <router-link to="/profile/">       <font-awesome-icon class="nav-icon" icon="fa-solid fa-user" size="xl"/>   </router-link></b-nav-item>
+          <b-nav-item>  <router-link to="/notifications"> <font-awesome-icon class="nav-icon" icon="fa-solid fa-bell" size="xl"/>   </router-link></b-nav-item>
+          <b-nav-item>  <a href="" v-on:click="logout">   <font-awesome-icon class="nav-icon" icon="fa-solid fa-power-off" size="xl" /> </a> </b-nav-item>
+        </b-navbar-nav>
+      </b-navbar>
       <router-view :token="token" :user="user"/>
     </div>
     <Login v-else/>
@@ -67,7 +67,7 @@ export default {
   },
   beforeDestroy() {
     clearInterval(this.timer)
-    },
+  },
   methods: {
     logout(){
       clearInterval(this.timer)

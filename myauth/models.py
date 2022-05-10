@@ -6,7 +6,7 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     longitude = models.FloatField(null=True)
     latitude = models.FloatField(null=True)
-    profile_picture = models.URLField(max_length=255, null=True, blank=True)
+    profile_picture = models.URLField(max_length=600, null=True, blank=True)
     current_song_name = models.CharField(max_length=255, null=True)
     current_song_url = models.URLField(max_length=255, null=True)
     spotify_profile_url = models.URLField(max_length=255, null=True)
@@ -18,6 +18,7 @@ class User(AbstractUser):
     facebook_url = models.URLField(max_length=255, null=True)
     twitter_url = models.URLField(max_length=255, null=True)
     city = models.CharField(max_length=20, null=True)
+    last_active = models.DateTimeField(auto_now_add=True)
     friends = models.ManyToManyField('Friendship')
     likes = models.ManyToManyField('Like')
 
