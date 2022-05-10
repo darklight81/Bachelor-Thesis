@@ -4,25 +4,12 @@
       <img v-if="like.given_by.profile_picture" class="rounded-circle" :src="like.given_by.profile_picture" alt="" />
       <img v-else class="rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar4.png" alt="" />
     </div>
-    <div class="font-weight-bold mr-3">
+    <div class="font-weight-bold mr-3 w-100">
       <div>
         {{this.like.given_by.username}} <span class="font-weight-normal">liked the song you were listening to:</span> {{this.like.song_name}}
-        <div class="small text-success"> <router-link :to="{ name: 'Profile', params: { id: this.like.given_by.id }, query: { id: this.like.given_by.id }}"><font-awesome-icon icon="check-circle"/> Visit profile </router-link></div>
+        <div class="small text-success"> <router-link :to="{ name: 'Profile', params: { id: this.like.given_by.id }}"><font-awesome-icon icon="check-circle"/> Visit profile </router-link></div>
       </div>
     </div>
-    <span class="ml-auto mb-auto">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-light btn-sm rounded" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="mdi mdi-dots-vertical"></i>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <button class="dropdown-item" type="button"><i class="mdi mdi-delete"></i> Delete</button>
-                                    <button class="dropdown-item" type="button"><i class="mdi mdi-close"></i> Turn Off</button>
-                                </div>
-                            </div>
-                            <br />
-                            <div class="text-right text-muted pt-1">4d</div>
-                        </span>
   </div>
 </template>
 

@@ -12,9 +12,11 @@
 
             <div class="font-weight-bold" v-if="this.user.current_song_name"> <a :href="this.user.current_song_url"> {{this.user.current_song_name}} </a>  </div>
             <div class="font-weight-bold" v-else> Currently not listening  </div>
+          <div v-if="!this.followed">
             <div class="font-weight-normal" v-if="this.user.distance < 3">{{ this.distance }} m away </div>
             <div class="font-weight-normal" v-else-if="this.user.distance < 300">{{ this.user.distance }} km away </div>
             <div class="font-weight-normal" v-else>Very far away </div>
+          </div>
           <div class="contact-box-footer">
             <div class="m-t-xs btn-group">
               <div class="likeSongButton" v-if="this.user.current_song_name">
@@ -39,6 +41,7 @@ import {addFriend, deleteLike, postLike, removeFriend} from "../axios-api";
 export default {
   name: "UserCard",
   props: {
+    followed: Boolean,
     user: Object,
     token: String,
     loggedUser: Object
@@ -52,6 +55,8 @@ export default {
     }
   },
   mounted() {
+    if (this.followed)
+      this.userFollowed = true
     this.user.distance = Math.round(this.user.distance * 100) / 100
     if (this.user.distance < 3)
       this.distance = this.user.distance * 1000 // into meters

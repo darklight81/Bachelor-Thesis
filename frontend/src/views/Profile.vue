@@ -10,7 +10,8 @@
                 <img v-else src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
                 <div class="mt-3">
                   <h4>{{ this.profile_user.username }}</h4>
-                  <a v-if="!this.isFriend" class="btn btn-xs btn-white" v-on:click="followPerson(user.id, $event)"><font-awesome-icon icon="fa-solid fa-user-plus" /> Follow</a>
+                  <span v-if="this.user.id === this.profile_user.id"></span>
+                  <a v-else-if="!this.isFriend" class="btn btn-xs btn-white" v-on:click="followPerson(user.id, $event)"><font-awesome-icon icon="fa-solid fa-user-plus" /> Follow</a>
                   <a v-else class="btn btn-xs btn-white" v-on:click="unfollowPerson(user.id, $event)"><font-awesome-icon icon="fa-solid fa-user-minus" /> Unfollow</a>
                 </div>
               </div>
@@ -107,7 +108,7 @@ import {addFriend, fetchFriends, getUser, removeFriend} from "../axios-api";
 export default {
   name: "Profile",
   props: {
-    id: Number || String,
+    id: [Number, String],
     user: Object,
     token: String
   },
@@ -119,14 +120,17 @@ export default {
     }
   },
   async mounted() {
-    //this.friends = await fetchFriends(this.token, this.id)
-    this.profile_user= await getUser(this.id,this.token)
-    this.profile_user = this.profile_user.user
-    this.friends = await fetchFriends(this.token, this.user.id)
-    this.friends.forEach(friendship => {
-      if(String(this.id) === String(friendship.friend.id))
-        this.isFriend = true
-    })
+    if (String(this.id) === String(this.user.id))
+      this.profile_user = this.user
+    else{
+      this.profile_user= await getUser(this.id,this.token)
+      this.profile_user = this.profile_user.user
+      this.friends = await fetchFriends(this.token, this.user.id)
+      this.friends.forEach(friendship => {
+        if(String(this.id) === String(friendship.friend.id))
+          this.isFriend = true
+      })
+    }
   },
   methods:{
     followPerson: function (friend_id, event){

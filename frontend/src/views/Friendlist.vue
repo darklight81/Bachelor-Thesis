@@ -1,7 +1,7 @@
 <template>
-    <div class="container ">
+    <div class="container" style="background: darkslategrey">
       <div class="row" :key="i" v-for="i in rowCount">
-          <UserCard v-for="friend in itemCountInRow(i)"  :key="friend.id" :user="friend.friend" :token="token" :logged-user="user"/>
+          <UserCard v-for="friend in itemCountInRow(i)"  :key="friend.id" :user="friend.friend" :token="token" :logged-user="user" :followed="true"/>
       </div>
     </div>
 </template>
@@ -58,10 +58,6 @@ body{margin-top:20px;
 }
 .contact-box > a {
   color: inherit;
-}
-.contact-box.center-version {
-  border: 1px solid #e7eaec;
-  padding: 0;
 }
 .contact-box.center-version > a {
   display: block;

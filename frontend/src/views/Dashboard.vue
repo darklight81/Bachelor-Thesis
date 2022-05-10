@@ -28,14 +28,19 @@ export default {
   components: {UserCard},
   props: {
     user: Object,
-    token: String
+    token: String,
   },
   data(){
     return{
+      rand: '',
       users: '',
       isLoading: true,
-      declinedLocation: false
+      declinedLocation: false,
+      isOffline: false,
     }
+  },
+  created() {
+    this.rand = Math.round(Math.random() * 1000)
   },
   mounted() {
     navigator.geolocation.getCurrentPosition(async res => {
