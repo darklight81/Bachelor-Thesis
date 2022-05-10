@@ -153,7 +153,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SOCIAL_AUTH_SPOTIFY_KEY = '00e9b37f36304c169d1bd8c77f50923a'
 SOCIAL_AUTH_SPOTIFY_SECRET = 'efa2dbe1c3054837a8ddf63124ea8319'
-SOCIAL_AUTH_SPOTIFY_SCOPE = ['user-read-private', 'user-read-playback-state', 'user-read-email', "user-read-currently-playing"]
+SOCIAL_AUTH_SPOTIFY_SCOPE = ['user-read-private', 'user-read-playback-state', 'user-read-email']
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.spotify.SpotifyOAuth2',

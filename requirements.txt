@@ -1,0 +1,12 @@
+Django==2.2.24
+gunicorn==19.9.0
+djangorestframework==3.13.1
+haversine==2.5.1
+requests==2.25.1
+social_auth_app_django==4.0.0
+sortedcontainers==2.4.0
+spotipy==2.19.0
+rest-social-auth
+social-auth-app-django
+django-cors-headers
+psycopg2==2.8.6

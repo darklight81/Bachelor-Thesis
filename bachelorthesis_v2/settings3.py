@@ -24,27 +24,9 @@ SECRET_KEY = 'django-insecure-tha#r1w74dq2%2-#$3y&n1ts#12grfun&l2@eug2i^5ay-ntca
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-#ALLOWED_HOSTS = ["https://api.spotify.com/v1/me", "localhost", "https://igor.uhlik.ml", "https://api.igor.uhlik.ml"]
-ALLOWED_HOSTS = ['*']
-# Application definition
+ALLOWED_HOSTS = []
 
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:8080',
-    "https://igor.uhlik.ml"
-]
-CORS_ALLOWED_ORIGINNS = [
-    'http://localhost:8080',
-    "https://igor.uhlik.ml"
-]
-CORS_ALLOW_METHODS = [
-        "DELETE",
-        "GET",
-        "OPTIONS",
-        "PATCH",
-        "PUT",
-        "POST"
-]
+# Application definition
 
 INSTALLED_APPS = [
     'myauth',
@@ -70,6 +52,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:8080'
 ]
 ROOT_URLCONF = 'bachelorthesis_v2.urls'
 
@@ -99,18 +85,12 @@ WSGI_APPLICATION = 'bachelorthesis_v2.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "TemperatureProject",
-
-        'USER': 'temperature',
-
-        'PASSWORD': 'gfjklafdhjafgjkag',
-
-        'HOST': 'db',
-
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -153,7 +133,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SOCIAL_AUTH_SPOTIFY_KEY = '00e9b37f36304c169d1bd8c77f50923a'
 SOCIAL_AUTH_SPOTIFY_SECRET = 'efa2dbe1c3054837a8ddf63124ea8319'
-SOCIAL_AUTH_SPOTIFY_SCOPE = ['user-read-private', 'user-read-playback-state', 'user-read-email', "user-read-currently-playing"]
+SOCIAL_AUTH_SPOTIFY_SCOPE = ['user-read-private', 'user-read-playback-state', 'user-read-email', 'user-read-currently-playing']
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.spotify.SpotifyOAuth2',
@@ -161,6 +141,6 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-REST_SOCIAL_OAUTH_ABSOLUTE_REDIRECT_URI = 'https://igor.uhlik.ml/'
+REST_SOCIAL_OAUTH_ABSOLUTE_REDIRECT_URI = 'http://localhost:8080/'
 REST_SOCIAL_DOMAIN_FROM_ORIGIN = False
 AUTH_USER_MODEL = 'myauth.User'
