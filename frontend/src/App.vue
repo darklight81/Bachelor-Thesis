@@ -56,7 +56,7 @@ export default {
     if (urlParams.get('code') && !this.user){
       let config = {
         'code': urlParams.get('code'),
-        'redirect_url': 'https://igor.uhlik.ml'
+        'redirect_url': 'https://sulovsky.dev'
       }
       this.token = await login(config)
       localStorage.setItem('token', this.token)

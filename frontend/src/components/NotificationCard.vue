@@ -6,7 +6,9 @@
     </div>
     <div class="font-weight-bold mr-3 w-100">
       <div>
-        {{this.like.given_by.username}} <span class="font-weight-normal">liked the song you were listening to:</span> {{this.like.song_name}}
+	<div v-if="this.like.given_by.first_name"> {{this.like.given_by.first_name + " " + this.like.given_by.last_name}} </div>
+        <div v-else> {{this.like.given_by.username}}</div> 
+	<span class="font-weight-normal">liked the song you were listening to:</span> {{this.like.song_name}}
         <div class="small text-success"> <router-link :to="{ name: 'Profile', params: { id: this.like.given_by.id }}"><font-awesome-icon icon="check-circle"/> Visit profile </router-link></div>
       </div>
     </div>

@@ -16,7 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { HalfCircleSpinner } from 'epic-spinners'
 
 import Axios from 'axios';
-Axios.defaults.baseURL = 'https://api.igor.uhlik.ml'
+Axios.defaults.baseURL = 'https://api.sulovsky.dev'
 
 Vue.config.productionTip = false
 library.add(far)

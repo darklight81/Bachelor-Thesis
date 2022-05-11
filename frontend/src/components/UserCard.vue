@@ -5,7 +5,9 @@
             <img alt="image" class="rounded-circle" v-if="!this.user.profile_picture" src="https://bootdey.com/img/Content/avatar/avatar1.png">
             <img alt="image" class="rounded-circle" v-else :src="this.user.profile_picture">
           </router-link>
-            <h3 class="m-b-xs"><strong>{{ this.user.username }}</strong>
+            <h3 class="m-b-xs">
+		<strong v-if="this.user.first_name">{{ this.user.first_name + " " + this.user.last_name }}</strong>
+		<strong v-else> {{this.user.username}} </strong>
               <a v-if="this.user.spotify_profile_url" :href="this.user.spotify_profile_url"><font-awesome-icon icon="fa-brands fa-spotify" style="color: darkolivegreen"/></a>
             </h3>
 

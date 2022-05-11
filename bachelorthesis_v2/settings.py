@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-tha#r1w74dq2%2-#$3y&n1ts#12grfun&l2@eug2i^5ay-ntca'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 #ALLOWED_HOSTS = ["https://api.spotify.com/v1/me", "localhost", "https://igor.uhlik.ml", "https://api.igor.uhlik.ml"]
 ALLOWED_HOSTS = ['*']
@@ -31,11 +31,13 @@ ALLOWED_HOSTS = ['*']
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:8080',
-    "https://igor.uhlik.ml"
+    "https://igor.uhlik.ml",
+    "https://sulovsky.dev"
 ]
 CORS_ALLOWED_ORIGINNS = [
     'http://localhost:8080',
-    "https://igor.uhlik.ml"
+    "https://igor.uhlik.ml",
+    "https://sulovsky.dev"
 ]
 CORS_ALLOW_METHODS = [
         "DELETE",
@@ -161,6 +163,6 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-REST_SOCIAL_OAUTH_ABSOLUTE_REDIRECT_URI = 'https://igor.uhlik.ml/'
+REST_SOCIAL_OAUTH_ABSOLUTE_REDIRECT_URI = 'https://sulovsky.dev/'
 REST_SOCIAL_DOMAIN_FROM_ORIGIN = False
 AUTH_USER_MODEL = 'myauth.User'
