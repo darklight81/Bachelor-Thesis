@@ -39,9 +39,6 @@ export default {
       isOffline: false,
     }
   },
-  created() {
-    this.rand = Math.round(Math.random() * 1000)
-  },
   mounted() {
     navigator.geolocation.getCurrentPosition(async res => {
       const config = {
