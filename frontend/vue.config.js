@@ -1,5 +1,4 @@
 module.exports = {
-    publicPath: '',
     pwa: {
         // General config bits..
         name: 'BachelorThesis',
@@ -15,6 +14,12 @@ module.exports = {
             runtimeCaching: [
                 {
                     urlPattern: new RegExp('https://fonts.(gstatic|googleapis).*'),
+                    handler: 'NetworkFirst',
+                    method: 'GET',
+                    options: {cacheableResponse: {statuses: [0, 200, 203]}}
+                },
+                {
+                    urlPattern: new RegExp('/profile/.*'),
                     handler: 'NetworkFirst',
                     method: 'GET',
                     options: {cacheableResponse: {statuses: [0, 200, 203]}}

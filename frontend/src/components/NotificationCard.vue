@@ -2,7 +2,7 @@
   <div class="p-3 d-flex align-items-center border-bottom osahan-post-header">
     <div class="dropdown-list-image mr-3">
       <img v-if="like.given_by.profile_picture" class="rounded-circle" :src="like.given_by.profile_picture" alt="" />
-      <img v-else class="rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar4.png" alt="" />
+      <img v-else class="rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" />
     </div>
     <div class="font-weight-bold mr-3 w-100">
       <div>

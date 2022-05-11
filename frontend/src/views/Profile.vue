@@ -7,7 +7,7 @@
             <div class="card-body">
               <div class="d-flex flex-column align-items-center text-center">
                 <img v-if="this.profile_user.profile_picture" :src="this.profile_user.profile_picture" alt="Admin" class="rounded-circle" width="150">
-                <img v-else src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
+                <img v-else src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Admin" class="rounded-circle" width="150">
                 <div class="mt-3">
                   <h4>{{ this.profile_user.username }}</h4>
                   <span v-if="this.user.id === this.profile_user.id"></span>
